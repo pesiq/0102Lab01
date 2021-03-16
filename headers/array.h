@@ -6,12 +6,12 @@
 typedef struct array Array;
 
 struct meta{
-    void* (*trim_dynamic)(Array* array, size_t amount);
-    void* (*pop_dynamic)(Array* array, void* item);
-    void (*delete_dynamic)(Array* array);
+    int (*trim_dynamic)(Array* array, size_t amount);
+    //int (*pop_dynamic)(Array* array, void* item);
+    int (*delete_dynamic)(Array* array);
 
-    Array* (*map) (Array* array);
-    void* (*where);
+    Array* (*map) (void (*fun)(), Array* array);
+    Array* (*where)(int (*fun)(), Array* array);
     Array* (*concatenate) (Array* a1, Array* a2);
 
 };
@@ -30,14 +30,16 @@ int pop(Array* array, void* item);
 //array access, returns 1 if success, 0 if index out of bounds, -1 if array is NULL
 int get(Array* array, int index, void* item);
 int set(Array* array, int index, void* item);
-size_t getSize(Array* array);
+size_t getSize(Array* array); // returns size, -1 if ptr NULL
 
 //function access, returns 1 if function present, 0 in function ptr == NULL
 int trim_dynamic(Array* array, size_t amount);
 int pop_dynamic(Array* array, void* item);
 int delete_dynamic(Array* array);
 
-Array* map(Array* array);
+Array* map(void* fun, Array* array);
+Array* where(int (*fun)(), Array* array);
+Array* concatenate(Array* a1, Array* a2);
 
 //deletion, returns 1 if success 0, if array ptr == NULL
 int delete(Array* array);

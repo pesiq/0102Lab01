@@ -31,7 +31,7 @@ Array* constructor(struct meta info, size_t size, size_t itemSize){
     result->fun.where = info.where;
     result->fun.concatenate = info.concatenate;
     result->fun.delete_dynamic = info.delete_dynamic;
-    result->fun.pop_dynamic = info.pop_dynamic;
+    //result->fun.pop_dynamic = info.pop_dynamic;
     result->fun.trim_dynamic = info.trim_dynamic;
 
     return result;
@@ -58,7 +58,7 @@ Array* copy(Array* array){
         result->fun.where = array->fun.where;
         result->fun.concatenate = array->fun.concatenate;
         result->fun.delete_dynamic = array->fun.delete_dynamic;
-        result->fun.pop_dynamic = array->fun.pop_dynamic;
+        //result->fun.pop_dynamic = array->fun.pop_dynamic;
         result->fun.trim_dynamic = array->fun.trim_dynamic;
 
         return result;
@@ -68,7 +68,7 @@ Array* copy(Array* array){
 
 int delete(Array* array){
     if(array) {
-        free(array->items);
+        if(array->size) free(array->items);
         free(array);
         return 1;
     }
@@ -125,6 +125,7 @@ size_t getSize(Array* array){
 //resize
 int expand(Array* array, size_t amount){
     if(array) {
+        if(amount <= 0) return 0;
         array->size += amount;
         void* temp = realloc(array->items, (array->size) * array->itemSize);
         if(temp){
@@ -138,6 +139,7 @@ int expand(Array* array, size_t amount){
 
 int trim(Array* array, size_t amount){
     if(array) {
+        if(amount <= 0) return 0;
         array->size -= amount;
         void* temp = realloc(array->items, (array->size) * array->itemSize);
         if(temp){
@@ -180,6 +182,7 @@ int pop(Array* array, void* item) {
 //function access
 
 int delete_dynamic(Array* array){
+    if(!array) return -1;
     if(array->fun.delete_dynamic) {
         array->fun.delete_dynamic(array);
         return 1;
@@ -187,6 +190,7 @@ int delete_dynamic(Array* array){
     return 0;
 }
 
+/*
 int pop_dynamic(Array* array, void* item){
     if(array->fun.pop_dynamic) {
         array->fun.pop_dynamic(array, item);
@@ -194,8 +198,10 @@ int pop_dynamic(Array* array, void* item){
     }
     return 0;
 }
+ */
 
 int trim_dynamic(Array* array, size_t amount){
+    if(!array) return -1;
     if(array->fun.trim_dynamic) {
         array->fun.trim_dynamic(array, amount);
         return 1;
@@ -203,6 +209,27 @@ int trim_dynamic(Array* array, size_t amount){
     return 0;
 }
 
-Array* map(Array* array){
-    return array->fun.map(array);
+Array* map(void* fun, Array* array){
+    if(!array) return NULL;
+    if(array->fun.map) {
+        return array->fun.map(fun, array);
+    }
+    return NULL;
+}
+
+Array* where(int (*fun)(), Array* array){
+    if(!array) return NULL;
+    if(array->fun.where) {
+        return array->fun.where(fun, array);
+    }
+    return NULL;
+}
+
+Array* concatenate(Array* a1, Array* a2){
+    if(!a1 && !a2) return NULL;
+    if(a1->itemSize != a2->itemSize) return NULL;
+    if(a1->fun.where) {
+        return a1->fun.concatenate(a1, a2);
+    }
+    return NULL;
 }
