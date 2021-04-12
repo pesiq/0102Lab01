@@ -56,8 +56,11 @@ unsigned int menuStrings(){
         printf("///-----ENTER STRINGS MANUALLY------///\n");
         printf("Enter amount of strings: ");
         scanf("%d", &selection);
-        printf("\n");
+        scanf("%*[^\n]");
+        scanf("%*c");
+        fflush(stdin);
         Array* array = new_string_array(selection);
+        printf("Created array id %d elements.\n", selection);
         int i;
         for(i = 0; i < selection; i++){
             char* temp = getstring();

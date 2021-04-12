@@ -81,7 +81,7 @@ int set(Array* array, int index, void* item){
         return -1;
     }
 
-    if(abs(index) >= array->size)
+    if(abs(index) > array->size || index == array->size)
         return 0;
 
     void *pos;
@@ -100,7 +100,7 @@ int get(Array* array, int index, void* item){
         return -1;
     }
 
-    if(abs(index) >= array->size)
+    if(abs(index) > array->size  || index == array->size)
         return 0;
 
     void* pos;
@@ -128,7 +128,7 @@ int expand(Array* array, size_t amount){
         if(amount <= 0) return 0;
         array->size += amount;
         void* temp = realloc(array->items, (array->size) * array->itemSize);
-        if(temp){
+        if(temp || array->size == 0){
             array->items = temp;
             return 1;
         }
@@ -142,7 +142,7 @@ int trim(Array* array, size_t amount){
         if(amount <= 0) return 0;
         array->size -= amount;
         void* temp = realloc(array->items, (array->size) * array->itemSize);
-        if(temp){
+        if(temp || array->size == 0){
             array->items = temp;
             return 1;
         }
@@ -155,7 +155,7 @@ int push(Array* array, void* item){
     if(array) {
         array->size++;
         void* temp = realloc(array->items, array->size * array->itemSize);
-        if(temp) {
+        if(temp || array->size == 0) {
             array->items = temp;
             void *ptr = array->items + array->size * array->itemSize;
             memcpy(ptr, item, array->itemSize);
@@ -171,7 +171,7 @@ int pop(Array* array, void* item) {
         void *ptr = array->items + array->size * array->itemSize;
         memcpy(item, ptr, array->itemSize);
         void* temp = realloc(array->items, array->size * array->itemSize);
-        if(temp){
+        if(temp || array->size == 0){
             array->items = temp;
             return 1;
         }

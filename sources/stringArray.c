@@ -52,7 +52,7 @@ void fun_for_map_s(char* str){
 }
 
 int fun_for_where_s(const char* str){
-    if(strlen(str) > 45){
+    if(strlen(str) > 8){
         return 1;
     }
     return 0;
@@ -65,7 +65,8 @@ int delete_d(Array* array) {
         for (i = 0; i < size; i++) {
             char *pos = NULL;
             get(array, i, &pos);
-            free(pos);
+            if(pos)
+                free(pos);
         }
         delete(array);
         return 1;
@@ -76,10 +77,11 @@ int delete_d(Array* array) {
 int trim_d(Array* array, size_t amount){
     if(array){
         int i;
-        for(i = 0; i < amount; i++){
+        for(i = 1; i <= amount; i++){
             char* ptr = NULL;
-            get(array, -i, ptr);
-            free(ptr);
+            get(array, -i, &ptr);
+            if(ptr)
+                free(ptr);
         }
         return trim(array, amount);
     }

@@ -4,7 +4,7 @@ void fun_for_map_i(int n, int* res){
     *res = n * 2;
 }
 int fun_for_where_i(int n){
-    return n > 10;
+    return n > 5;
 }
 
 Array* map_i(void (*fun)(int, int*), Array* array){
@@ -43,7 +43,7 @@ Array* concatenate_i(Array* a1, Array* a2){
     if(result){
         if(expand(result, getSize(a2)) != 1) return NULL;
         int i, offset = getSize(a1);
-        char * ptr = NULL;
+        int * ptr = NULL;
         for(i = 0; i < getSize(a2); i++){
             get(a2, i, &ptr);
             set(result, offset + i, &ptr);
